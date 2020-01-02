@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.cash.CashMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="Cash">
+    <id column="id" property="id"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="version" property="version"/>
+    <result column="archive" property="archive"/>
+    <result column="user_id" property="userId"/>
+    <result column="status" property="status"/>
+    <result column="cash_amount" property="cashAmount"/>
+    <result column="bank" property="bank"/>
+    <result column="cash_amount_number" property="cashAmountNumber"/>
+    <result column="cash_name" property="cashName"/>
+
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+		ca.id,ca.created_at,ca.updated_at,ca.version,ca.archive,ca.user_id,ca.status,ca.cash_amount,ca.bank,ca.cash_amount_number,ca.cash_name
+    </sql>
+
+  <resultMap id="CashDOMap" type="CashDO" extends="BaseResultMap">
+    <result column="nickname" property="nickname"/>
+    <result column="avatar" property="avatar"/>
+    <result column="phone" property="phone"/>
+  </resultMap>
+
+  <sql id="Base_Select_List">
+    <if test="params.keyWord != null">
+      and (u.nickname like concat('%',#{params.keyWord},'%') or (u.phone like
+      concat('%',#{params.keyWord},'%')) )
+    </if>
+    <if test="params.status != null">
+      and ca.status = #{params.status}
+    </if>
+    <if test="params.startTime != null">
+      <![CDATA[and ca.created_at >= #{params.startTime}]]>
+    </if>
+    <if test="params.endTime != null">
+      <![CDATA[and ca.created_at <= #{params.endTime}]]>
+    </if>
+  </sql>
+
+
+  <select id="listBySearch" resultMap="CashDOMap">
+    select
+    <include refid="Base_Column_List"/>,u.nickname,u.avatar,u.phone
+    from t_cash ca
+    left join t_we_chat_user u
+    on ca.user_id = u.id
+    where ca.archive = false
+    and u.archive = false
+    <include refid="Base_Select_List"/>
+    order by ca.created_at desc
+  </select>
+</mapper>
+

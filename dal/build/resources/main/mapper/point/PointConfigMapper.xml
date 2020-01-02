@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.point.PointConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="PointConfig">
+		<id column="id" property="id"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="updated_at" property="updatedAt"/>
+		<result column="version" property="version"/>
+		<result column="archive" property="archive"/>
+		<result column="scene_type" property="sceneType"/>
+		<result column="amount" property="amount"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		pc.id,pc.created_at,pc.updated_at,pc.version,pc.archive,pc.scene_type,pc.amount
+    </sql>
+
+</mapper>
+

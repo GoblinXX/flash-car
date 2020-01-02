@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.forum.InvitationDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="InvitationDetail">
+		<id column="id" property="id"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="updated_at" property="updatedAt"/>
+		<result column="version" property="version"/>
+		<result column="archive" property="archive"/>
+		<result column="user_id" property="userId"/>
+		<result column="name" property="name"/>
+		<result column="phone" property="phone"/>
+		<result column="address" property="address"/>
+		<result column="invitation_type" property="invitationType"/>
+		<result column="supply_type" property="supplyType"/>
+		<result column="release_type" property="releaseType"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="hidden_status" property="hiddenStatus"/>
+		<result column="approval_status" property="approvalStatus"/>
+
+    </resultMap>
+
+	<resultMap id="InvitationDetailDOMap" type="InvitationDetailDO" extends="BaseResultMap">
+		<result column="avatar" property="avatar"/>
+		<result column="nickname" property="nickname"/>
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		id.id,id.created_at,id.updated_at,id.version,id.archive,id.user_id,id.name,id.phone,id.address,id.invitation_type,id.supply_type,id.release_type,id.title,id.content,id.hidden_status,id.approval_status
+    </sql>
+
+	<select id="getPassInvitationDetailSys" resultMap="InvitationDetailDOMap">
+		select <include refid="Base_Column_List"/>,wcu.avatar,wcu.nickname
+		from t_invitation_detail id
+		join t_we_chat_user wcu
+		on id.user_id=wcu.id
+		where id.archive = false and wcu.archive = false
+		<if test="params.keyword != null">
+			and id.phone like concat("%",#{params.keyword},"%")
+		</if>
+		<if test="params.startTime != null">
+			<![CDATA[and id.created_at >= #{params.startTime}]]>
+		</if>
+		<if test="params.endTime != null">
+			<![CDATA[and id.created_at < #{params.endTime}]]>
+		</if>
+		<if test="params.invitationType != null">
+			and id.invitation_type = #{params.invitationType}
+		</if>
+		<if test="params.supplyType != null">
+			and id.supply_type = #{params.supplyType}
+		</if>
+		<if test="params.releaseType != null">
+			and id.release_type = #{params.releaseType}
+		</if>
+		and id.approval_status = 'PASSED'
+		order by id.created_at desc
+	</select>
+
+	<select id="getInvitationDetailById" resultMap="InvitationDetailDOMap">
+		select <include refid="Base_Column_List"/>,wcu.avatar,wcu.nickname
+		from t_invitation_detail id
+		join t_we_chat_user wcu
+		on id.user_id=wcu.id
+		where id.archive = false and wcu.archive = false
+		and id.id=#{id}
+	</select>
+
+
+	<select id="getAllInvitationDetailSys" resultMap="InvitationDetailDOMap">
+		select <include refid="Base_Column_List"/>,wcu.avatar,wcu.nickname
+		from t_invitation_detail id
+		join t_we_chat_user wcu
+		on id.user_id=wcu.id
+		where id.archive = false and wcu.archive = false
+		<if test="params.keyword != null">
+			and id.phone like concat("%",#{params.keyword},"%")
+		</if>
+		<if test="params.startTime != null">
+			<![CDATA[and id.created_at >= #{params.startTime}]]>
+		</if>
+		<if test="params.endTime != null">
+			<![CDATA[and id.created_at < #{params.endTime}]]>
+		</if>
+		<if test="params.invitationType != null">
+			and id.invitation_type = #{params.invitationType}
+		</if>
+		<if test="params.supplyType != null">
+			and id.supply_type = #{params.supplyType}
+		</if>
+		<if test="params.releaseType != null">
+			and id.release_type = #{params.releaseType}
+		</if>
+		<if test="params.approvalStatus != null">
+			and id.approval_status = #{params.approvalStatus}
+		</if>
+		order by id.created_at desc
+	</select>
+
+
+
+	<select id="getPassInvitationDetailApp" resultMap="InvitationDetailDOMap">
+		select <include refid="Base_Column_List"/>,wcu.avatar,wcu.nickname
+		from t_invitation_detail id
+		join t_we_chat_user wcu
+		on id.user_id=wcu.id
+		where id.archive = false and wcu.archive = false
+		<if test="params.keyword != null">
+			and id.title like concat("%",#{params.keyword},"%")
+		</if>
+		<if test="params.startTime != null">
+			<![CDATA[and id.created_at >= #{params.startTime}]]>
+		</if>
+		<if test="params.endTime != null">
+			<![CDATA[and id.created_at < #{params.endTime}]]>
+		</if>
+		<if test="params.invitationType != null">
+			and id.invitation_type = #{params.invitationType}
+		</if>
+		<if test="params.supplyType != null">
+			and id.supply_type = #{params.supplyType}
+		</if>
+		<if test="params.releaseType != null">
+			and id.release_type = #{params.releaseType}
+		</if>
+		and id.approval_status = 'PASSED'
+		and id.hidden_status = 0
+		order by id.created_at desc
+	</select>
+
+</mapper>
+

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.point.UserPointMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="UserPoint">
+		<id column="id" property="id"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="updated_at" property="updatedAt"/>
+		<result column="version" property="version"/>
+		<result column="archive" property="archive"/>
+		<result column="user_id" property="userId"/>
+		<result column="available_point" property="availablePoint"/>
+		<result column="cumulative_point" property="cumulativePoint"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		up.id,up.created_at,up.updated_at,up.version,up.archive,up.user_id,up.available_point,up.cumulative_point
+    </sql>
+
+</mapper>
+

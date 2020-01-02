@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to nginx!</title>
+    <style>
+        body {
+            width: 35em;
+            margin: 0 auto;
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+<h1>Welcome to nginx! 故国神游</h1>
+<p style="color: green">
+    实时更新静态页面<br>
+    可以用docker cp 命令，语法如下<br/>
+</p>
+<p style="font-weight: bold">
+    docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-<br/>
+    docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH <br/>
+</p>
+<p style="color: green">
+    例如本案例docker cp html/index.html nginx:/opt/html/
+</p>
+
+</body>
+</html>

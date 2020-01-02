@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.forum.InvitationReplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="InvitationReply">
+        <id column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="version" property="version"/>
+        <result column="archive" property="archive"/>
+        <result column="user_id" property="userId"/>
+        <result column="invitation_id" property="invitationId"/>
+        <result column="content" property="content"/>
+        <result column="super_reply_id" property="superReplyId"/>
+
+    </resultMap>
+
+    <resultMap id="InvitationReplyDOMap" type="InvitationReplyDO" extends="BaseResultMap">
+        <result column="avatar" property="avatar"/>
+        <result column="nickname" property="nickname"/>
+        <result column="title" property="title"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		ir.id,ir.created_at,ir.updated_at,ir.version,ir.archive,ir.user_id,ir.invitation_id,ir.content,ir.super_reply_id
+    </sql>
+
+    <select id="getReplyByInvitationDetailId" resultMap="InvitationReplyDOMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,wcu.avatar,wcu.nickname
+        from t_invitation_reply ir
+        join t_we_chat_user wcu
+        on ir.user_id = wcu.id
+        where ir.archive = false
+        and wcu.archive = false
+        and ir.super_reply_id = 0
+        and ir.invitation_id = #{invitationId}
+        order by ir.created_at desc
+    </select>
+
+    <select id="getAllReplyByInvitationReplyId" resultMap="InvitationReplyDOMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,wcu.avatar,wcu.nickname
+        from t_invitation_reply ir
+        join t_we_chat_user wcu
+        on ir.user_id = wcu.id
+        where ir.archive = false
+        and wcu.archive = false
+        and (ir.id = #{invitationReplyId} or ir.super_reply_id = #{invitationReplyId})
+        order by ir.created_at asc
+    </select>
+
+    <select id="getSubordinateReply" resultMap="InvitationReplyDOMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,wcu.avatar,wcu.nickname
+        from t_invitation_reply ir
+        join t_we_chat_user wcu
+        on ir.user_id = wcu.id
+        where ir.archive = false
+        and wcu.archive = false
+        and ir.super_reply_id = #{invitationReplyId}
+        order by ir.created_at asc
+    </select>
+
+    <select id="getOwnReply" resultMap="InvitationReplyDOMap">
+        select
+        <include refid="Base_Column_List"/>,wcu.avatar,wcu.nickname,tid.title
+        from t_invitation_reply ir
+        left join t_we_chat_user wcu
+        on ir.user_id=wcu.id
+        left join t_invitation_detail tid
+        on ir.invitation_id=tid.id
+        where ir.archive = false
+        and wcu.archive = false
+        and tid.archive = false
+        and ir.owner_id = #{userId}
+        order by ir.created_at desc
+    </select>
+
+    <select id="getSubordinateReplyBySuperId" resultMap="InvitationReplyDOMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,wcu.avatar,wcu.nickname
+        from t_invitation_reply ir
+        join t_we_chat_user wcu
+        on ir.user_id = wcu.id
+        where ir.archive = false
+        and wcu.archive = false
+        and ir.super_reply_id = #{invitationReplyId}
+        order by ir.created_at asc
+        limit 2
+    </select>
+
+</mapper>
+

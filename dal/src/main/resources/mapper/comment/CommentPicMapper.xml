@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.comment.CommentPicMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.byy.dal.entity.beans.comment.CommentPic">
+	  <id column="id" property="id"/>
+	  <result column="created_at" property="createdAt"/>
+	  <result column="updated_at" property="updatedAt"/>
+	  <result column="archive" property="archive"/>
+	  <result column="version" property="version"/>
+	  <result column="comment_id" property="commentId"/>
+	  <result column="img_url" property="imgUrl"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+	  cp.id,cp.created_at,cp.updated_at,cp.archive,cp.version,cp.comment_id,cp.img_url
+  </sql>
+
+</mapper>
+
+

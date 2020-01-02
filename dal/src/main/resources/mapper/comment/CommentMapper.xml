@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.comment.CommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.byy.dal.entity.beans.comment.Comment">
+        <id column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="archive" property="archive"/>
+        <result column="version" property="version"/>
+        <result column="order_id" property="orderId"/>
+        <result column="content" property="content"/>
+        <result column="approval_status" property="approvalStatus"/>
+    </resultMap>
+
+    <resultMap id="CommentDOMap" type="CommentDO" extends="BaseResultMap">
+        <result column="avatar" property="avatar"/>
+        <result column="nickname" property="nickname"/>
+        <result column="product_name" property="productName"/>
+        <result column="total_fee" property="totalFee"/>
+        <result column="paid_at" property="paidAt"/>
+        <result column="amount" property="amount"/>
+        <result column="order_no" property="orderNo"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+	  c.id,c.created_at,c.updated_at,c.archive,c.version,c.order_id,c.content,c.status
+    </sql>
+
+    <select id="getCommentList" resultMap="CommentDOMap">
+        select c.id,wcu.avatar,wcu.nickname,o.product_name,o.total_fee,o.paid_at,c.created_at,c.content,c.approval_status,o.order_no
+        from t_comment c
+        left join t_order o
+        on c.order_id = o.id
+        left join t_we_chat_user wcu
+        on o.user_id = wcu.id
+        where c.archive = false
+        <if test="params.keyword != null">
+            and o.order_no like concat("%",#{params.keyword},"%")
+        </if>
+        <if test="params.startTime != null">
+            <![CDATA[and c.created_at >= #{params.startTime}]]>
+        </if>
+        <if test="params.endTime != null">
+            <![CDATA[and c.created_at < #{params.endTime}]]>
+        </if>
+        <if test="params.approvalStatus != null">
+            and c.approval_status = #{params.approvalStatus}
+        </if>
+        order by c.created_at desc
+    </select>
+
+    <select id="getComment" resultMap="CommentDOMap">
+        select c.id,wcu.avatar,wcu.nickname,o.product_name,o.total_fee,o.paid_at,o.amount,c.created_at,c.content,o.order_no,c.approval_status
+        from t_comment c
+        left join t_order o
+        on c.order_id = o.id
+        left join t_we_chat_user wcu
+        on o.user_id = wcu.id
+        where c.archive = false
+        and c.id = #{commentId}
+    </select>
+
+    <select id="getCommentByOrderId" resultMap="CommentDOMap">
+        select c.id,wcu.avatar,wcu.nickname,o.product_name,o.total_fee,o.paid_at,o.amount,c.created_at,c.content,o.order_no
+        from t_comment c
+        left join t_order o
+        on c.order_id = o.id
+        left join t_we_chat_user wcu
+        on o.user_id = wcu.id
+        where c.archive = false
+        and o.id = #{orderId}
+    </select>
+
+    <select id="getProductComment" resultMap="CommentDOMap">
+        select c.id,wcu.avatar,wcu.nickname,c.content,c.created_at
+        from t_comment c
+        left join t_order tor
+        on c.order_id = tor.id
+        left join t_we_chat_user wcu
+        on tor.user_id = wcu.id
+        where c.archive = false
+        and c.approval_status = 'PASSED'
+        and c.order_id in (
+          select o.id
+          from t_order o
+          where o.sku_id in (
+            select s.id
+            from t_sku s
+            where s.product_id = #{productId})
+          and (o.order_type = 'STORE' or o.order_type = 'HOME'))
+        limit 1
+    </select>
+
+    <select id="getCommentByProductId" resultMap="CommentDOMap">
+        select c.id,wcu.avatar,wcu.nickname,c.content,c.created_at
+        from t_comment c
+        left join t_order tor
+        on c.order_id = tor.id
+        left join t_we_chat_user wcu
+        on tor.user_id = wcu.id
+        where c.archive = false
+        and c.approval_status = 'PASSED'
+        and c.order_id in (
+          select o.id
+          from t_order o
+          where o.sku_id in (
+            select s.id
+            from t_sku s
+            where s.product_id = #{productId})
+          and (o.order_type = 'STORE' or o.order_type = 'HOME'))
+        order by c.created_at desc
+    </select>
+
+    <select id="getProductCommentAmount" resultType="Integer">
+        select COUNT(id)
+        from t_comment
+        where archive = false
+        and approval_status = 'PASSED'
+        and order_id in (
+          select o.id
+          from t_order o
+          where o.sku_id in (
+            select s.id
+            from t_sku s
+            where s.product_id = #{productId})
+            and (o.order_type = 'STORE' or o.order_type = 'HOME'))
+    </select>
+
+    <select id="getRentProductComment" resultMap="CommentDOMap">
+        select c.id,wcu.avatar,wcu.nickname,c.content,c.created_at
+        from t_comment c
+        left join t_order tor
+        on c.order_id = tor.id
+        left join t_we_chat_user wcu
+        on tor.user_id = wcu.id
+        where c.archive = false
+        and c.approval_status = 'PASSED'
+        and c.order_id in (
+          select o.id
+          from t_order o
+          where o.sku_id in (
+            select rpt.id
+            from t_rent_product_time rpt
+            where rpt.rent_product_id = #{rentProductId})
+          and o.order_type = 'RENT')
+        limit 1
+    </select>
+
+    <select id="getCommentByRentProductId" resultMap="CommentDOMap">
+        select c.id,wcu.avatar,wcu.nickname,c.content,c.created_at
+        from t_comment c
+        left join t_order tor
+        on c.order_id = tor.id
+        left join t_we_chat_user wcu
+        on tor.user_id = wcu.id
+        where c.archive = false
+        and c.approval_status = 'PASSED'
+        and c.order_id in (
+          select o.id
+          from t_order o
+          where o.sku_id in (
+            select rpt.id
+            from t_rent_product_time rpt
+            where rpt.rent_product_id = #{rentProductId})
+          and o.order_type = 'RENT')
+        order by c.created_at desc
+    </select>
+
+    <select id="getRentProductCommentAmount" resultType="Integer">
+        select COUNT(id)
+        from t_comment
+        where archive = false
+        and approval_status = 'PASSED'
+        and order_id in (
+          select o.id
+          from t_order o
+          where o.sku_id in (
+            select rpt.id
+            from t_rent_product_time rpt
+            where rpt.rent_product_id = #{rentProductId})
+          and o.order_type = 'RENT')
+    </select>
+</mapper>
+
+

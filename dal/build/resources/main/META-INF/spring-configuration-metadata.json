@@ -1,0 +1,69 @@
+{
+  "properties": [
+    {
+      "name": "security.jwt",
+      "sourceType": "com.byy.dal.entity.beans.security.Jwt",
+      "type": "com.byy.dal.entity.beans.security.Jwt"
+    },
+    {
+      "name": "security.jwt.secure",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "security.jwt.expireTime",
+      "sourceType": "java.lang.Long",
+      "type": "java.lang.Long"
+    },
+    {
+      "name": "security.jwt.header",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "security.permitUrls",
+      "sourceType": "java.lang.String[]",
+      "type": "java.lang.String[]"
+    },
+    {
+      "name": "security.loginSuccessUrl",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "security.loginFailUrl",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "security.loginUrl",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "qi-niu.access-key",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "qi-niu.secret-key",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "qi-niu.bucket",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "qi-niu.base-url",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "im.base-url",
+      "sourceType": "java.lang.String",
+      "type": "java.lang.String"
+    }
+  ]
+}

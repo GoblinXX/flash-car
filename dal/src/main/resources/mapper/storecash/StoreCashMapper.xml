@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.storecash.StoreCashMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.byy.dal.entity.beans.storecash.StoreCash">
+    <id column="id" property="id"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="archive" property="archive"/>
+    <result column="version" property="version"/>
+    <result column="store_id" property="storeId"/>
+    <result column="status" property="status"/>
+    <result column="cash_amount" property="cashAmount"/>
+    <result column="bank" property="bank"/>
+    <result column="cash_amount_number" property="cashAmountNumber"/>
+    <result column="cash_name" property="cashName"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+	  sc.id,sc.created_at,sc.updated_at,sc.archive,sc.version,sc.store_id,sc.status,sc.cash_amount,sc.bank,sc.cash_amount_number,sc.cash_name
+  </sql>
+
+  <resultMap id="StoreCashDOMap" type="StoreCashDO" extends="BaseResultMap">
+    <result column="name" property="name"/>
+    <result column="phone" property="phone"/>
+    <result column="store_name" property="storeName"/>
+  </resultMap>
+
+  <sql id="Base_Select_List">
+    <if test="params.keyWord != null">
+      and (au.name like concat('%',#{params.keyWord},'%') or (au.phone like
+      concat('%',#{params.keyWord},'%')) )
+    </if>
+    <if test="params.status != null">
+      and sc.status = #{params.status}
+    </if>
+    <if test="params.startTime != null">
+      <![CDATA[and sc.created_at >= #{params.startTime}]]>
+    </if>
+    <if test="params.endTime != null">
+      <![CDATA[and sc.created_at <= #{params.endTime}]]>
+    </if>
+  </sql>
+
+
+  <select id="listBySearch" resultMap="StoreCashDOMap">
+    select
+    <include refid="Base_Column_List"/>,s.name as store_name,au.name ,au.phone
+    from t_store_cash sc
+    left join t_store s
+    on sc.store_id = s.id
+    left join t_audit_store au
+    on au.id = s.audit_store_id
+    where sc.archive = false
+    and s.archive = false
+    <include refid="Base_Select_List"/>
+    order by sc.created_at desc
+  </select>
+
+</mapper>
+
+

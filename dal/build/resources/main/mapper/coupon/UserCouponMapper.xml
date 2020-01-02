@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.coupon.UserCouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="UserCoupon">
+        <id column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="version" property="version"/>
+        <result column="archive" property="archive"/>
+        <result column="user_id" property="userId"/>
+        <result column="coupon_id" property="couponId"/>
+        <result column="usable" property="usable"/>
+    </resultMap>
+
+    <resultMap id="UserCouponDOMap" type="UserCouponDO" extends="BaseResultMap">
+        <result column="face_value" property="faceValue"/>
+        <result column="valid_from" property="validFrom"/>
+        <result column="valid_to" property="validTo"/>
+        <result column="condition_use" property="conditionUse"/>
+        <result column="coupon_archive" property="couponArchive"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		uc.id,uc.created_at,uc.updated_at,uc.version,uc.archive,uc.user_id,uc.coupon_id,uc.usable
+    </sql>
+
+    <select id="getOwnCouponApp" resultMap="UserCouponDOMap">
+		select uc.id,uc.user_id,uc.coupon_id,uc.usable,c.face_value,c.valid_from,c.valid_to,c.condition_use,c.archive as coupon_archive
+          from t_user_coupon uc
+          join t_coupon c on uc.coupon_id=c.id
+        where uc.archive=false and uc.user_id = #{userId}
+        order by uc.created_at desc
+	</select>
+
+    <select id="getOwnUsableCouponApp" resultMap="UserCouponDOMap">
+		select uc.id,uc.user_id,uc.coupon_id,uc.usable,c.face_value,c.valid_from,c.valid_to,c.condition_use,c.archive as coupon_archive
+          from t_user_coupon uc
+          join t_coupon c on uc.coupon_id=c.id
+        where uc.archive=false
+        and uc.user_id = #{params.userId}
+        <![CDATA[and c.valid_from <= #{params.nowTime}]]>
+        <![CDATA[and c.valid_to >= #{params.nowTime}]]>
+        and uc.usable = 1
+        order by uc.created_at desc
+	</select>
+
+  <select id="selectCanUseCoupons" resultMap="UserCouponDOMap">
+    select uc.id,uc.user_id,uc.coupon_id,uc.usable,c.name as
+    coupon_name,c.condition_use,c.face_value,c.valid_from,c.valid_to
+    from t_user_coupon uc
+    join t_coupon c
+    on uc.coupon_id = c.id
+    where uc.archive = false
+    and c.valid_from &lt; now()
+    and c.valid_to &gt; now()
+    and uc.usable = true
+    <if test="params != null">
+      <if test="params.userId != null">
+        and uc.user_id = #{params.userId}
+      </if>
+      <if test="params.goodsFee != null">
+        and c.condition_use &lt;= #{params.goodsFee}
+      </if>
+      <if test="params.maxFaceValue != null">
+        and c.face_value &lt;= #{params.maxFaceValue}
+      </if>
+      <if test="params.useCouponId != null">
+        and uc.id = #{params.useCouponId}
+      </if>
+    </if>
+  </select>
+
+</mapper>
+

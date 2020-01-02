@@ -1,0 +1,10 @@
+dependencies {
+  compile project(':dal')
+  compile springBootStarterAop
+  compile springBootStarterRedis
+  compile jwt
+  compile oss
+
+  implementation qiniu
+  implementation txsms
+}

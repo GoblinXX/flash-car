@@ -1,0 +1,6 @@
+rootProject.name = 'flash-car'
+include 'dal'
+include 'biz'
+include 'api'
+include 'docs'
+

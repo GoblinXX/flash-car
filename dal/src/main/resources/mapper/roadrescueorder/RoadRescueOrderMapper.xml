@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.roadrescueorder.RoadRescueOrderMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.byy.dal.entity.beans.roadrescueorder.RoadRescueOrder">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="archive" property="archive"/>
+    <result column="version" property="version"/>
+    <result column="paid_at" property="paidAt"/>
+    <result column="goods_fee" property="goodsFee"/>
+    <result column="total_fee" property="totalFee"/>
+    <result column="buyer_name" property="buyerName"/>
+    <result column="buyer_phone" property="buyerPhone"/>
+    <result column="order_no" property="orderNo"/>
+    <result column="store_id" property="storeId"/>
+    <result column="status" property="status"/>
+    <result column="address" property="address"/>
+    <result column="detailed_address" property="detailedAddress"/>
+    <result column="order_type" property="orderType"/>
+    <result column="road_rescue_id" property="roadRescueId"/>
+    <result column="remarks" property="remarks"/>
+    <result column="show_back" property="showBack"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+	  rro.id,rro.user_id,rro.created_at,rro.updated_at,rro.archive,rro.version,rro.paid_at,
+	  rro.goods_fee,rro.total_fee,rro.buyer_name,rro.buyer_phone,rro.order_no,rro.store_id,
+	  rro.status,rro.address,rro.detailed_address,rro.order_type,rro.road_rescue_id,rro.remarks,rro.show_back
+  </sql>
+
+  <resultMap id="RoadRescueOrderDOMap" type="RoadRescueOrderDO" extends="BaseResultMap">
+    <result column="name" property="name"/>
+    <result column="image" property="image"/>
+    <result column="new_address" property="newAddress"/>
+    <result column="store_address" property="storeAddress"/>
+    <result column="picture" property="picture"/>
+    <result column="price" property="price"/>
+    <result column="road_rescue_name" property="roadRescueName"/>
+  </resultMap>
+
+  <sql id="Base_Select_List">
+    <if test="params.roadType != null">
+      and rro.status = #{params.roadType}
+    </if>
+    <if test="params.userId != null">
+      and rro.user_id = #{params.userId}
+    </if>
+  </sql>
+
+  <sql id="Back_Select_List">
+    <if test="params.status != null">
+      and rro.status = #{params.status}
+    </if>
+    <if test="params.storeId != null">
+      and rro.store_id = #{params.storeId}
+    </if>
+    <if test="params.orderNo != null">
+      and rro.order_no like concat('%',#{params.orderNo},'%')
+    </if>
+    <if test="params.startTime != null">
+      <![CDATA[and rro.created_at >= #{params.startTime}]]>
+    </if>
+    <if test="params.endTime != null">
+      <![CDATA[and rro.created_at <= #{params.endTime}]]>
+    </if>
+  </sql>
+
+  <select id="selectRoadRescue" resultMap="RoadRescueOrderDOMap">
+    select
+    <include refid="Base_Column_List"/>,s.name,s.image,s.address as store_address,
+    concat(rro.address,rro.detailed_address) as new_address,rr.price,rr.picture,rr.name as
+    road_rescue_name
+    from t_road_rescue_order rro
+    left join t_store s
+    on rro.store_id = s.id
+    left join t_road_rescue rr
+    on rro.road_rescue_id = rr.id
+    where rro.archive = false
+    and rr.archive = false
+    and rro.id = #{id}
+  </select>
+
+  <select id="selectRoadRescueToApp" resultMap="RoadRescueOrderDOMap">
+    select
+    <include refid="Base_Column_List"/>,s.name,s.image,s.address as store_address,
+    concat(rro.address,rro.detailed_address) as new_address,rr.price,rr.picture,rr.name as
+    road_rescue_name
+    from t_road_rescue_order rro
+    left join t_store s
+    on rro.store_id = s.id
+    left join t_road_rescue rr
+    on rro.road_rescue_id = rr.id
+    where rr.archive = false
+    and rro.archive = false
+    <include refid="Base_Select_List"/>
+    order by rro.created_at desc
+  </select>
+
+  <select id="selectRoadRescueToBack" resultMap="RoadRescueOrderDOMap">
+    select
+    <include refid="Base_Column_List"/>,s.name,s.image,s.address as store_address,
+    concat(rro.address,rro.detailed_address) as new_address,rr.price,rr.picture,rr.name as
+    road_rescue_name
+    from t_road_rescue_order rro
+    left join t_store s
+    on rro.store_id = s.id
+    left join t_road_rescue rr
+    on rro.road_rescue_id = rr.id
+    where rro.archive = false
+    and rro.show_back = true
+    and rr.archive = false
+    <include refid="Back_Select_List"/>
+    order by rro.created_at desc
+  </select>
+
+  <select id="getRoadOrderToChart" resultType="HomeDO">
+    SELECT
+    date(dday) countDate,
+    count(*) - 1 as orders,
+    sum(a.total_amount) as orderAmount
+    FROM
+    (
+    SELECT
+    datelist as dday,total_amount
+    FROM
+    calendar
+    where <![CDATA[#{startTime} <= date(datelist)&&date(datelist)< #{endTime}]]>
+    UNION ALL
+    SELECT
+    created_at,total_fee
+    FROM
+    t_road_rescue_order
+    where  archive =false
+    and status in ('PROCESSING','SUCCESS')
+    <if test="storeId != 0">
+      and store_id = #{storeId}
+    </if>
+    and  <![CDATA[created_at >= #{startTime} && created_at < #{endTime}]]>
+    ) a
+    GROUP BY countDate;
+  </select>
+
+
+</mapper>
+
+

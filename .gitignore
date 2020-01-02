@@ -1,0 +1,51 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+将删除 .gradle/
+将删除 .idea/codeStyles/
+将删除 .idea/compiler.xml
+将删除 .idea/dataSources.local.xml
+将删除 .idea/dataSources/
+将删除 .idea/google-java-format.xml
+将删除 .idea/gradle.xml
+将删除 .idea/libraries/
+将删除 .idea/misc.xml
+将删除 .idea/modules.xml
+将删除 .idea/modules/
+将删除 .idea/vcs.xml
+将删除 .idea/workspace.xml
+将删除 api/build/
+将删除 api/out/production/classes/com/byy/api/config/CorsFilterConfig.class
+将删除 api/out/production/classes/com/byy/api/config/TimeSerializerConfig$1.class
+将删除 api/out/production/classes/com/byy/api/config/TimeSerializerConfig$2.class
+将删除 api/out/production/classes/com/byy/api/config/TimeSerializerConfig.class
+将删除 api/out/production/classes/com/byy/api/security/wechat/
+将删除 api/out/production/classes/generated/
+将删除 api/out/production/resources/
+将删除 api/out/test/classes/generated_tests/
+将删除 biz/build/
+将删除 biz/out/production/classes/com/byy/biz/service/wechat/
+将删除 biz/out/production/classes/generated/
+将删除 biz/out/test/classes/generated_tests/
+将删除 dal/build/
+将删除 dal/out/production/classes/com/byy/dal/common/errors/UserAuthException.class
+将删除 dal/out/production/classes/com/byy/dal/common/functions/
+将删除 dal/out/production/classes/com/byy/dal/common/utils/
+将删除 dal/out/production/classes/com/byy/dal/entity/
+将删除 dal/out/production/classes/generated/
+将删除 dal/out/test/
+将删除 docs/build/
+将删除 api/src/main/java/com/byy/api/service/controller/chapter/
+将删除 api/src/main/java/com/byy/api/service/form/chapter/
+将删除 api/src/main/java/com/byy/api/service/vo/chapter/
+将删除 api/src/main/java/com/byy/api/service/vo/user/
+将删除 biz/src/main/java/com/byy/biz/service/chapter/
+将删除 dal/src/main/java/com/byy/dal/entity/dos/chapter/
+将删除 dal/src/main/java/com/byy/dal/entity/dos/user/
+将删除 dal/src/main/resources/mapper/chapter/

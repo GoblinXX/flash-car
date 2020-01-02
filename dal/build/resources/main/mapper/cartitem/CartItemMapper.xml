@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.cartitem.CartItemMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.byy.dal.entity.beans.cartitem.CartItem">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="archive" property="archive"/>
+    <result column="version" property="version"/>
+    <result column="sku_id" property="skuId"/>
+    <result column="quantity" property="quantity"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+	  ci.id,ci.user_id,ci.created_at,ci.updated_at,ci.archive,ci.version,ci.sku_id,ci.quantity
+  </sql>
+
+  <resultMap id="CartItemDOMap" type="CartItemDO" extends="BaseResultMap">
+    <result column="image" property="image"/>
+    <result column="product_name" property="productName"/>
+    <result column="name" property="name"/>
+    <result column="sale_price" property="salePrice"/>
+  </resultMap>
+
+  <select id="pageByCartItem" resultMap="CartItemDOMap">
+    select
+    <include refid="Base_Column_List"/>,p.image,p.name as product_name,s.name,s.sale_price
+    from t_cart_item ci
+    left join t_sku s
+    on ci.sku_id = s.id
+    left join t_product p
+    on s.product_id = p.id
+    where ci.archive = false
+    and s.archive = false
+    and p.archive = false
+    and ci.user_id = #{userId}
+    order by ci.created_at desc
+  </select>
+
+  <select id="listByCartItemIds" resultMap="CartItemDOMap">
+    select
+    <include refid="Base_Column_List"/>,p.image,p.name as product_name,s.name,s.sale_price
+    from t_cart_item ci
+    left join t_sku s
+    on ci.sku_id = s.id
+    left join t_product p
+    on s.product_id = p.id
+    where ci.archive = false
+    and s.archive = false
+    and p.archive = false
+    and ci.id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+    order by ci.created_at desc
+  </select>
+
+</mapper>
+
+
+

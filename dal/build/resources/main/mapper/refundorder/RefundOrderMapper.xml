@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.refundorder.RefundOrderMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.byy.dal.entity.beans.refundorder.RefundOrder">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="archive" property="archive"/>
+    <result column="version" property="version"/>
+    <result column="out_refund_no" property="outRefundNo"/>
+    <result column="order_no" property="orderNo"/>
+    <result column="main_order_no" property="mainOrderNo"/>
+    <result column="status" property="status"/>
+    <result column="amount" property="amount"/>
+    <result column="order_type" property="orderType"/>
+    <result column="store_id" property="storeId"/>
+    <result column="order_at" property="orderAt"/>
+    <result column="goods_fee" property="goodsFee"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+	  ro.id,ro.user_id,ro.created_at,ro.updated_at,ro.archive,ro.version,
+	  ro.out_refund_no,ro.order_no,ro.main_order_no,ro.status,ro.amount,ro.order_type,ro.store_id,ro.order_at,ro.goods_fee
+  </sql>
+
+</mapper>
+
+

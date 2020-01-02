@@ -1,0 +1,101 @@
+version: '3.7'
+services:
+  my-app:
+    image: 47.96.110.23:8081/flash-car/app:1.0
+    volumes:
+    - ~/byy:/root/byy
+    - ./wait-for:/opt/wait-for
+    - ./docker-entrypoint-app.sh:/opt/docker-entrypoint.sh
+    environment:
+    - TZ=Asia/Shanghai
+    depends_on:
+    - my-db
+    - my-redis
+    entrypoint: sh -c /opt/docker-entrypoint.sh
+    healthcheck:
+      test: curl -X POST http://127.0.0.1:8080/flash-car/api/v1/json || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+    - my-overlay
+
+  my-db:
+    image: mysql:8.0.15
+    volumes:
+    - /opt/mysql/data:/var/lib/mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=p@ssWord2019
+    - MYSQL_DATABASE=flash_car
+    - TZ=Asia/Shanghai
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-client-handshake=FALSE
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --explicit_defaults_for_timestamp=true
+      --max_allowed_packet=10M
+      --lower_case_table_names=1
+      --default-time_zone='+8:00'
+    ports:
+    - 3306:3306
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+    - my-overlay
+
+  my-redis:
+    image: redis:5.0.4-alpine
+    volumes:
+    - /opt/redis/data:/data
+    environment:
+    - TZ=Asia/Shanghai
+    command:
+      --requirepass p@ssWord2019
+      --appendonly yes
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+    - my-overlay
+
+  my-nginx:
+    image: nginx:1.15.10-alpine
+    volumes:
+    - ./nginx/ssl:/etc/nginx/ssl
+    - ./nginx/conf.d:/etc/nginx/conf.d
+    - ./nginx/html:/opt/html
+    - /var/log/nginx/:/var/log/nginx/
+    environment:
+    - TZ=Asia/Shanghai
+    ports:
+    - 80:80
+    - 443:443
+    depends_on:
+    - my-app
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+    - my-overlay
+
+networks:
+  my-overlay:
+    external: true

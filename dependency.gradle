@@ -1,0 +1,37 @@
+ext {
+    springBootVersion = '2.1.2.RELEASE'
+    def springBootDruidVersion = '1.1.10'
+    def mybatisPlusVersion = '3.1.0'
+    def guavaVersion = '27.0.1-jre'
+    def mysqlConnectorVersion = '8.0.13'
+    def jwtVersion = '3.7.0'
+    def lombokVersion = '1.18.4'
+    def jacksonVersion = '2.9.8'
+    def pinyin4jVersion = '2.5.1'
+    def qiNiuVersion = '7.2.11'
+    def bouncyVersion = '1.55'
+    def ossVersion = '1.22'
+    def pay = '1.24'
+    def qCloudSmsVersion = '1.0.6'
+    
+    springBootStarter = "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+    springBootStarterWeb = "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    springBootStarterAop = "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}"
+    springBootStarterRedis = "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"
+    springBootStarterSecurity = "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    springBootDruidStarter = "com.alibaba:druid-spring-boot-starter:${springBootDruidVersion}"
+    springBootStarterTest = "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    mybatisPlusStarter = "com.baomidou:mybatis-plus-boot-starter:${mybatisPlusVersion}"
+    guava = "com.google.guava:guava:${guavaVersion}"
+    mysqlConnector = "mysql:mysql-connector-java:${mysqlConnectorVersion}"
+    jwt = "com.auth0:java-jwt:${jwtVersion}"
+    lombok = "org.projectlombok:lombok:${lombokVersion}"
+    jackSonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    jackSonDatabind = "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    pinyin4j = "com.belerweb:pinyin4j:${pinyin4jVersion}"
+    qiniu = "com.qiniu:qiniu-java-sdk:${qiNiuVersion}"
+    bouncycastle = "org.bouncycastle:bcprov-jdk15on:${bouncyVersion}"
+    oss = "com.byy:oss:${ossVersion}"
+    wxpay = "com.byy:pay-wx:${pay}"
+    txsms = "com.github.qcloudsms:qcloudsms:${qCloudSmsVersion}"
+}

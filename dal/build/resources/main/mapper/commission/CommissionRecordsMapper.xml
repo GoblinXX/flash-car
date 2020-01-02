@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.commission.CommissionRecordsMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="CommissionRecords">
+    <id column="id" property="id"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="version" property="version"/>
+    <result column="archive" property="archive"/>
+    <result column="user_id" property="userId"/>
+    <result column="num" property="num"/>
+    <result column="order_no" property="orderNo"/>
+    <result column="type" property="type"/>
+    <result column="before_commission" property="beforeCommission"/>
+    <result column="after_commission" property="afterCommission"/>
+
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+		cr.id,cr.created_at,cr.updated_at,cr.version,cr.archive,cr.user_id,cr.num,cr.order_no,cr.type,cr.before_commission,cr.after_commission
+    </sql>
+
+  <resultMap id="CommissionRecordsDOMap" type="CommissionRecordsDO" extends="BaseResultMap">
+    <result column="nickname" property="nickname"/>
+  </resultMap>
+
+
+  <select id="listBySearch" resultMap="CommissionRecordsDOMap">
+    select
+    <include refid="Base_Column_List"/>,u.nickname
+    from t_commission_records cr
+    left join t_order o
+    on cr.order_no = o.order_no
+    left join t_we_chat_user u
+    on o.user_id = u.id
+    where cr.archive = false
+    and o.archive = false
+    and u.archive = false
+    and cr.type = 'GET'
+    and cr.user_id = #{userId}
+    order by cr.created_at desc
+  </select>
+
+</mapper>
+

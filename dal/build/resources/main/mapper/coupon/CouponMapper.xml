@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.coupon.CouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="Coupon">
+		<id column="id" property="id"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="updated_at" property="updatedAt"/>
+		<result column="version" property="version"/>
+		<result column="archive" property="archive"/>
+		<result column="name" property="name"/>
+		<result column="amount" property="amount"/>
+		<result column="rest_amount" property="restAmount"/>
+		<result column="valid_from" property="validFrom"/>
+		<result column="valid_to" property="validTo"/>
+		<result column="condition" property="condition"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		c.id,c.created_at,c.updated_at,c.version,c.archive,c.name,c.amount,c.rest_amount,c.valid_from,c.valid_to,c.condition
+    </sql>
+
+</mapper>
+

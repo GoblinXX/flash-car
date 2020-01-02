@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.product.RentProductMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="RentProduct">
+        <id column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="version" property="version"/>
+        <result column="archive" property="archive"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="amount" property="amount"/>
+        <result column="cost_price" property="costPrice"/>
+        <result column="deposit" property="deposit"/>
+        <result column="parent_commission_ratio" property="parentCommissionRatio"/>
+        <result column="grandpa_commission_ratio" property="grandpaCommissionRatio"/>
+        <result column="content" property="content"/>
+        <result column="on_sale" property="onSale"/>
+
+    </resultMap>
+
+    <resultMap id="RentProductDOMap" type="RentProductDO" extends="BaseResultMap">
+        <result column="price" property="price"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		rp.id,rp.created_at,rp.updated_at,rp.version,rp.archive,rp.name,rp.image,rp.amount,rp.cost_price,rp.deposit,rp.parent_commission_ratio,rp.grandpa_commission_ratio,rp.content,rp.on_sale
+    </sql>
+
+
+</mapper>
+

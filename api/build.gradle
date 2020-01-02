@@ -1,0 +1,41 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    classpath("se.transmode.gradle:gradle-docker:1.2")
+  }
+}
+
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'docker'
+apply plugin: 'application'
+
+mainClassName = "com.byy.api.Application" //指定运行时入口
+
+bootJar {
+  baseName = 'api'
+  version = '1.0'
+  excludes = ['**/rebel.xml', '**/.keep']
+}
+
+dependencies {
+  compile project(':biz')
+
+  implementation springBootStarterWeb
+  implementation wxpay
+}
+
+task dockerBuilder(type: Docker) {
+  applicationName = bootJar.baseName
+  tagVersion = bootJar.version
+  dockerfile = file('Dockerfile')
+  doFirst {
+    copy {
+      from bootJar
+      into stageDir
+    }
+  }
+}

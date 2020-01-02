@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.location.AddressChainMapper">
+
+  <resultMap id="AddressChainMap" type="AddressChain">
+    <result column="area_id" property="areaId"/>
+    <result column="city_id" property="cityId"/>
+    <result column="province_id" property="provinceId"/>
+    <result column="area" property="area"/>
+    <result column="city" property="city"/>
+    <result column="province" property="province"/>
+  </resultMap>
+
+  <select id="selectAddressChain"
+          resultMap="AddressChainMap">
+    select area.id   as area_id,
+           c.id      as city_id,
+           p.id      as province_id,
+           area.name as area,
+           c.name    as city,
+           p.name    as province
+    from t_area area
+           join t_city c on area.city_id = c.id
+           join t_province p on c.province_id = p.id
+    where area.id = #{areaId}
+  </select>
+
+</mapper>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.roadrescuepic.RoadRescuePicMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.byy.dal.entity.beans.roadrescuepic.RoadRescuePic">
+    <id column="id" property="id"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="archive" property="archive"/>
+    <result column="version" property="version"/>
+    <result column="road_rescue_id" property="roadRescueId"/>
+    <result column="image" property="image"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+	  rrp.id,rrp.created_at,rrp.updated_at,rrp.archive,rrp.version,rrp.road_rescue_id,rrp.image
+  </sql>
+
+</mapper>
+
+

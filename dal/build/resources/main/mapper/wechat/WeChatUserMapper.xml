@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.wechat.WeChatUserMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="WeChatUser">
+    <id column="id" property="id"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="version" property="version"/>
+    <result column="archive" property="archive"/>
+    <result column="open_id" property="openId"/>
+    <result column="union_id" property="unionId"/>
+    <result column="session_key" property="sessionKey"/>
+    <result column="phone" property="phone"/>
+    <result column="gender" property="gender"/>
+    <result column="nickname" property="nickname"/>
+    <result column="avatar" property="avatar"/>
+    <result column="username" property="username"/>
+    <result column="password" property="password"/>
+
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    w.id,w.created_at,w.updated_at,w.version,w.archive,w.open_id,w.union_id,w.session_key,w.phone,
+    w.gender,w.nickname,w.avatar,w.username,w.password
+    </sql>
+
+  <resultMap id="WeChatUserDOMap" type="WeChatUserDO" extends="BaseResultMap">
+    <result column="available_point" property="availablePoint"/>
+    <result column="cumulative_point" property="cumulativePoint"/>
+    <result column="accumulated_commission" property="accumulatedCommission"/>
+    <result column="current_balance" property="currentBalance"/>
+    <result column="superior_id" property="superiorId"/>
+  </resultMap>
+
+  <sql id="Base_Select_List">
+    <if test="params.keyWord != null">
+      and (w.nickname like concat('%',#{params.keyWord},'%') or w.phone like
+      concat('%',#{params.keyWord},'%'))
+    </if>
+  </sql>
+
+  <select id="listUserBySys" resultMap="WeChatUserDOMap">
+    select
+    <include refid="Base_Column_List"/>
+    ,p.available_point,p.cumulative_point,d.accumulated_commission,d.current_balance,d.superior_id
+    from t_we_chat_user w
+    left join t_distribution_center d
+    on w.id = d.user_id
+    left join t_user_point p
+    on w.id = p.user_id
+    where w.archive = false
+    <include refid="Base_Select_List"/>
+    order by w.created_at desc
+  </select>
+
+  <select id="checkSubordinateUserInfo" resultMap="WeChatUserDOMap">
+    select
+    <include refid="Base_Column_List"/>
+    ,p.available_point,p.cumulative_point,d.accumulated_commission,d.current_balance,d.superior_id
+    from t_we_chat_user w
+    left join t_distribution_center d
+    on w.id = d.user_id
+    left join t_user_point p
+    on w.id = p.user_id
+    where w.archive = false
+    and d.superior_id = #{params.userId}
+    <include refid="Base_Select_List"/>
+    order by w.created_at desc
+  </select>
+
+  <select id="selectSubordinateInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_we_chat_user w
+    left join t_distribution_center d
+    on w.id = d.user_id
+    where w.archive = false
+    and d.superior_id = #{userId}
+    order by w.created_at desc
+  </select>
+
+
+</mapper>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <property name="LOG_FILE_DIR" value="${user.home}/byy"/>
+  <property name="LOG_FILE_NAME" value="${LOG_FILE_DIR}/flash-car.log"/>
+  <property name="PATTERN"
+    value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] %highlight(%-5level) %logger{36}
+    - %msg%n"/>
+  <property name="PATTERN_FILE"
+    value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}
+    - %msg%n"/>
+
+  <!-- 控制台打印 -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder charset="utf-8">
+      <pattern>${PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 输入到文件，按日期和文件大小 -->
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>${LOG_FILE_NAME}</File>
+    <encoder charset="utf-8">
+      <pattern>${PATTERN_FILE}</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_FILE_DIR}/log/translator-%d{yyyy-MM-dd}.zip</fileNamePattern>
+    </rollingPolicy>
+  </appender>
+
+  <!-- Logger 根目录 -->
+  <root level="DEBUG">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration>

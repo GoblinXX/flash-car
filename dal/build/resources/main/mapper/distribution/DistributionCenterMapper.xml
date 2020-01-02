@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.distribution.DistributionCenterMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="DistributionCenter">
+    <id column="id" property="id"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="version" property="version"/>
+    <result column="archive" property="archive"/>
+    <result column="user_id" property="userId"/>
+    <result column="superior_id" property="superiorId"/>
+    <result column="accumulated_commission" property="accumulatedCommission"/>
+    <result column="current_balance" property="currentBalance"/>
+
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+		dc.id,dc.created_at,dc.updated_at,dc.version,dc.archive,dc.user_id,dc.superior_id,dc.accumulated_commission,dc.current_balance
+    </sql>
+
+  <resultMap id="DistributionDOMap" type="DistributionCenterDO" extends="BaseResultMap">
+    <result column="superior_name" property="superiorName"/>
+    <result column="nickname" property="nickname"/>
+    <result column="avatar" property="avatar"/>
+  </resultMap>
+
+
+  <select id="selectByDisId" resultMap="DistributionDOMap">
+    select A.id,
+       A.archive,
+       A.version,
+       A.updated_at,
+       A.created_at,
+       A.superior_id,
+       A.current_balance,
+       A.accumulated_commission,
+       A.nickname,
+       A.avatar,
+       A.user_id,
+       ifnull(us.nickname,'系统') as superior_name
+from (
+    select dis.id,
+        dis.archive,
+        dis.version,
+        dis.updated_at,
+        dis.created_at,
+        dis.superior_id,
+        dis.current_balance,
+        dis.accumulated_commission,
+        dis.user_id,
+        u.avatar,
+        u.nickname
+    from t_distribution_center dis
+           left join t_we_chat_user u on dis.user_id = u.id
+    where dis.id = #{id}) A left join t_we_chat_user us on us.id = A.superior_id;
+  </select>
+</mapper>
+

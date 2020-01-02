@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.order.BackOrderMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="Order">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="archive" property="archive"/>
+    <result column="version" property="version"/>
+    <result column="main_order_id" property="mainOrderId"/>
+    <result column="order_no" property="orderNo"/>
+    <result column="buyer_name" property="buyerName"/>
+    <result column="buyer_phone" property="buyerPhone"/>
+    <result column="sku_id" property="skuId"/>
+    <result column="amount" property="amount"/>
+    <result column="install_fee" property="installFee"/>
+    <result column="service_fee" property="serviceFee"/>
+    <result column="deposit_fee" property="depositFee"/>
+    <result column="store_id" property="storeId"/>
+    <result column="status" property="status"/>
+    <result column="total_fee" property="totalFee"/>
+    <result column="goods_fee" property="goodsFee"/>
+    <result column="coupon_discount" property="couponDiscount"/>
+    <result column="point_discount" property="pointDiscount"/>
+    <result column="use_point" property="usePoint"/>
+    <result column="address" property="address"/>
+    <result column="order_type" property="orderType"/>
+    <result column="paid_at" property="paidAt"/>
+    <result column="order_time" property="orderTime"/>
+    <result column="message" property="message"/>
+    <result column="sku_name" property="skuName"/>
+    <result column="sku_price" property="skuPrice"/>
+    <result column="sku_cost_price" property="skuCostPrice"/>
+    <result column="product_name" property="productName"/>
+    <result column="product_pic" property="productPic"/>
+  </resultMap>
+
+  <resultMap id="BackOrderDOMap" type="BackOrderDO" extends="BaseResultMap">
+    <result column="store_name" property="storeName"/>
+    <result column="category_name" property="categoryName"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+		o.id,o.created_at,o.updated_at,o.version,o.archive,o.user_id,o.main_order_id,o.order_no,o.buyer_name,o.buyer_phone,o.sku_id,o.amount,o.install_fee,o.service_fee,o.deposit_fee,o.store_id,o.status,o.total_fee,o.goods_fee,o.coupon_discount,o.point_discount,o.use_point,o.address,o.order_type,o.paid_at,o.order_time,o.message,o.sku_name,o.sku_price,o.sku_cost_price,o.product_name,o.product_pic
+    </sql>
+
+  <select id="getOrder" resultMap="BackOrderDOMap">
+    select<include refid="Base_Column_List"/>,s.name as store_name,tc.name as category_name
+    from t_order o
+    left join t_store s
+    on o.store_id=s.id
+    left join t_sku sk
+    on o.sku_id=sk.id
+    left join t_product p
+    on sk.product_id=p.id
+    left join t_category tc
+    on p.category_id=tc.id
+    where o.archive = false and (CASE WHEN o.status = 'SUBMITTED' and o.show_back = 1 THEN 0 ELSE 1 END=1) and o.status in ('SUBMITTED','PAID','SHIPPED','RECEIVED','RETURNING','RETURNED','SUCCESS','CANCELLED')
+    <if test="params.keyword != null">
+      and o.order_no like concat("%",#{params.keyword},"%")
+    </if>
+    <if test="params.startTime != null">
+      <![CDATA[and o.created_at >= #{params.startTime}]]>
+    </if>
+    <if test="params.endTime != null">
+      <![CDATA[and o.created_at < #{params.endTime}]]>
+    </if>
+    <if test="params.orderType != null">
+      and o.order_type = #{params.orderType}
+    </if>
+    <if test="params.status != null">
+      and o.status = #{params.status}
+    </if>
+    <if test="params.storeId != null">
+      and o.store_id = #{params.storeId}
+    </if>
+    order by o.created_at desc
+  </select>
+
+  <select id="getOrderById" resultMap="BackOrderDOMap">
+    select<include refid="Base_Column_List"/>,s.name as store_name,tc.name as category_name
+    from t_order o
+    left join t_store s
+    on o.store_id=s.id
+    left join t_sku sk
+    on o.sku_id=sk.id
+    left join t_product p
+    on sk.product_id=p.id
+    left join t_category tc
+    on p.category_id=tc.id
+    where o.archive = false and o.id = #{orderId}
+  </select>
+
+  <select id="getOrderExport" resultMap="BackOrderDOMap">
+    select<include refid="Base_Column_List"/>,s.name as store_name,tc.name as category_name
+    from t_order o
+    left join t_store s
+    on o.store_id=s.id
+    left join t_sku sk
+    on o.sku_id=sk.id
+    left join t_product p
+    on sk.product_id=p.id
+    left join t_category tc
+    on p.category_id=tc.id
+    where o.archive = false and (CASE WHEN o.status = 'SUBMITTED' and o.show_back = 1 THEN 0 ELSE 1 END=1) and o.status in ('SUBMITTED','PAID','SHIPPED','RECEIVED','RETURNING','RETURNED','SUCCESS','CANCELLED')
+    <if test="params.keyword != null">
+      and o.order_no like concat("%",#{params.keyword},"%")
+    </if>
+    <if test="params.startTime != null">
+      <![CDATA[and o.created_at >= #{params.startTime}]]>
+    </if>
+    <if test="params.endTime != null">
+      <![CDATA[and o.created_at < #{params.endTime}]]>
+    </if>
+    <if test="params.orderType != null">
+      and o.order_type = #{params.orderType}
+    </if>
+    <if test="params.status != null">
+      and o.status = #{params.status}
+    </if>
+    <if test="params.storeId != null">
+      and o.store_id = #{params.storeId}
+    </if>
+    order by o.created_at desc
+  </select>
+
+  <select id="getOrderToChart" resultType="HomeDO">
+    SELECT
+    date(dday) countDate,
+    count(*) - 1 as orders,
+    sum(a.total_amount) as orderAmount
+    FROM
+    (
+    SELECT
+    datelist as dday,total_amount
+    FROM
+    calendar
+    where <![CDATA[#{startTime} <= date(datelist)&&date(datelist)< #{endTime}]]>
+    UNION ALL
+    SELECT
+    created_at,total_fee
+    FROM
+    t_order
+    where  archive =false
+    and status in ('SHIPPED','RECEIVED','RETURNING','RETURNED','SUCCESS')
+    <if test="storeId != 0">
+      and store_id = #{storeId}
+    </if>
+    and  <![CDATA[created_at >= #{startTime} && created_at < #{endTime}]]>
+    ) a
+    GROUP BY countDate;
+  </select>
+
+
+</mapper>
+

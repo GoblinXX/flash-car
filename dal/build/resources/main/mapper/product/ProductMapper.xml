@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byy.dal.mapper.product.ProductMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="Product">
+        <id column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="version" property="version"/>
+        <result column="archive" property="archive"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="install_fee" property="installFee"/>
+        <result column="service_fee" property="serviceFee"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="parent_commission_ratio" property="parentCommissionRatio"/>
+        <result column="grandpa_commission_ratio" property="grandpaCommissionRatio"/>
+        <result column="content" property="content"/>
+        <result column="on_sale" property="onSale"/>
+        <result column="on_hot" property="onHot"/>
+
+    </resultMap>
+
+    <resultMap id="ProductDOMap" type="ProductDO" extends="BaseResultMap">
+        <result column="category_name" property="categoryName"/>
+        <result column="sale_price" property="salePrice"/>
+        <result column="original_price" property="originalPrice"/>
+        <result column="cost_price" property="costPrice"/>
+        <result column="amount" property="amount"/>
+        <result column="sale_amount" property="saleAmount"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+		p.id,p.created_at,p.updated_at,p.version,p.archive,p.name,p.image,p.install_fee,p.service_fee,p.category_id,p.parent_commission_ratio,p.grandpa_commission_ratio,p.content,p.on_sale,p.on_hot
+    </sql>
+
+
+    <select id="getAllProductSys" resultMap="ProductDOMap">
+        select p.id,p.image,p.name,c.name as
+        category_name,p.on_sale,p.on_hot
+        from t_product p
+        join t_category c
+        on p.category_id=c.id
+        where p.archive = false  and c.archive = false
+        <if test="params.keyword != null">
+            and p.name like concat("%",#{params.keyword},"%")
+        </if>
+        <if test="params.categoryId != null">
+            and p.category_id=#{params.categoryId}
+        </if>
+        <if test="params.onSale != null">
+            and p.on_sale=#{params.onSale}
+        </if>
+        order by p.created_at desc
+    </select>
+
+
+</mapper>
+

@@ -1,0 +1,100 @@
+spring:
+  datasource:
+    url: jdbc:mysql://my-db:3306/flash_car?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: p@ssWord2019
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+  redis:
+    host: my-redis
+    password: p@ssWord2019
+  servlet:
+    multipart:
+      max-file-size: 512MB
+      max-request-size: 512MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  typeAliasesPackage: com.byy.dal.entity
+  global-config:
+    db-config:
+      id-type: auto
+      table-prefix: t_
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      db-type: mysql
+  configuration:
+    lazyLoadingEnabled: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+security:
+  jwt:
+    secure: jwtSecureKey
+    expire-time: 8640000000000
+    header: Authorization
+  permit-urls:
+  - /user/check-login
+  - /error
+  - /json
+  - /wx/payBackBefore.json
+  - /home
+  login-success-url: /user/auth/success
+  login-fail-url: /user/auth/fail
+  login-url: /user/auth/login
+
+server:
+  servlet:
+    context-path: /flash-car/api/v1
+  port: 8080
+
+
+qi-niu:
+  access-key: AK
+  secret-key: SK
+  bucket: flash-car
+  base-url: http://cdn.flash-car.com/
+
+#腾讯cos配置文件
+CosConfig:
+  secretId: AKIDSfU4Yv36Zr00sXa3yoWKvMPUL5lI4JW2
+  secretKey: EJJBowviGrKhphJfohRvA93sGVgqmTuu
+  bucketName: flash-car
+  appId: 1258928824
+  region: ap-chongqing
+
+#wx支付配置
+wxPayConfig:
+  appId: "wx3510d75a50ec06cd"
+  mchId: "1530635391"
+  secretKey: "hyxpdp2tr8023whwhy5203wajzzcxjyy"
+  notifyUrl: "https://hbjzscb.com/flash-car/api/v1/wx/payBackBefore.json"
+  refundPath: "/opt/refund/apiclient_cert.p12"
+
+#腾讯云发送短信
+sms:
+  appId: 1400232015
+  appKey: d655e15cd4096c799fde24b018af5c75
+  smsSign: 闪车帮
+  #到店安装
+  templateId1: 372330
+  #在线租赁
+  templateId2: 372311
+  #上门服务
+  templateId3: 372309
+  #道路救援
+  templateId4: 372307

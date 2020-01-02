@@ -1,0 +1,33 @@
+plugins { id "io.spring.dependency-management" version "1.0.7.RELEASE" }
+
+apply from: 'dependency.gradle'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = project_group
+    version = project_version
+    sourceCompatibility = project_jdk
+    targetCompatibility = project_jdk
+
+    jar {
+        excludes = ['**/rebel.xml', '**/.keep']
+    }
+
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url 'http://47.99.216.55:8081/repository/maven-public/'
+        }
+    }
+
+    dependencies {
+        annotationProcessor lombok
+        compileOnly lombok
+        testCompile springBootStarterTest
+    }
+}
